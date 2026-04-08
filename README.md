@@ -1,70 +1,125 @@
-# Getting Started with Create React App
+# 🌊 SnippetFlow
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Elevate your developer workflow with SnippetFlow, a modern, terminal-inspired code snippet manager.**
 
-## Available Scripts
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+
+---
+
+## ✨ Overview
+
+SnippetFlow is a premium developer tool designed to organize, store, and access your most important code snippets. Featuring a sleek **Terminal Midnight** aesthetic, it combines the power of a modern web application with the focused feel of a high-performance terminal.
+
+Managed through a procedural dot-grid background and high-contrast "Matrix Emerald" accents, SnippetFlow isn't just a manager—it's your technical workspace.
+
+## 🚀 Key Features
+
+-   **🔐 Secure Authentication**: Integrated with Firebase Auth (Google & GitHub support) to keep your snippets private and synced across devices.
+-   **📁 Project-Based Organization**: Group snippets into focused projects with custom color accents and descriptions.
+-   **🛡️ Syntax Highlighting**: Premium code rendering for 50+ languages using `react-syntax-highlighter`.
+-   **🔍 Instantly Searchable**: Lightning-fast search across projects and snippet titles.
+-   **⚡ Terminal Midnight UI**: A technical, high-performance aesthetic featuring scanline effects, glassmorphic components, and fluid Framer Motion animations.
+-   **📱 Responsive Design**: Fully optimized for desktop and mobile developers.
+
+---
+
+## 🛠️ Tech Stack
+
+-   **Frontend**: React.js 18
+-   **Styling**: Tailwind CSS (Custom Developer Theme)
+-   **Database**: Firebase Firestore & SQL.js
+-   **Auth**: Firebase Authentication
+-   **Icons**: Lucide React
+-   **Animations**: Framer Motion
+
+---
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+-   [Node.js](https://nodejs.org/) (v16.0.0 or higher)
+-   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+-   A [Firebase Project](https://console.firebase.google.com/)
+
+### Installation
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/imadhurgupta/code-snippets.git
+    cd code-snippets
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**:
+    Create a `.env` file in the root directory and add your Firebase credentials:
+    ```env
+    REACT_APP_FIREBASE_API_KEY=your_api_key
+    REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+    REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+    REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+    REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+    REACT_APP_FIREBASE_APP_ID=your_app_id
+    ```
+
+4.  **Start the development server**:
+    ```bash
+    npm start
+    ```
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── components/       # UI Components (Header, Auth, SnippetCard, etc.)
+├── db/               # Database logic and SQL.js integration
+├── firebase.js       # Firebase initialization and service exports
+├── App.js            # Main application routing and theme setup
+├── index.css         # Global styles and Tailwind directives
+└── App.css           # Component-specific styles and animations
+```
+
+---
+
+## 📜 Available Scripts
 
 In the project directory, you can run:
 
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### `npm run build`
+Builds the app for production to the `build` folder.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🤝 Contributing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-### `npm run eject`
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📄 License
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Distributed under the MIT License. See `LICENSE` for more information.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="center">
+  Built with 💻 and ☕ by <b>Madhav Gupta</b>
+</p>
