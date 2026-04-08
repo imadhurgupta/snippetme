@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,48 +6,38 @@
 
 @layer base {
   body {
-    @apply bg-background text-slate-300 antialiased selection:bg-primary/20 transition-colors duration-500 overflow-x-hidden;
+    @apply bg-[#020202] text-slate-300 antialiased selection:bg-secondary/20 transition-colors duration-500 overflow-x-hidden;
     font-family: 'Inter', sans-serif;
-    zoom: 0.8;
   }
 }
 
-.bg-terminal {
-  @apply bg-background;
-  background-image: 
-    radial-gradient(circle at 2px 2px, rgba(16, 185, 129, 0.05) 1px, transparent 0);
-  background-size: 32px 32px;
+/* Premium Background Effects */
+.bg-premium {
+  @apply fixed inset-0 z-[-1] overflow-hidden bg-[#020202];
 }
 
-.scanline::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, 
-    rgba(5, 5, 5, 0) 0%, 
-    rgba(5, 5, 5, 0.4) 50%, 
-    rgba(5, 5, 5, 0) 100%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  animation: scan 10s linear infinite;
+.aura {
+  @apply absolute rounded-full blur-[120px] mix-blend-screen animate-aura;
 }
 
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+.aura-1 {
+  @apply w-[600px] h-[600px] bg-secondary/10 top-[-200px] left-[-100px];
+}
+
+.aura-2 {
+  @apply w-[500px] h-[500px] bg-accent/10 bottom-[-100px] right-[-100px];
+}
+
+.aura-3 {
+  @apply w-[400px] h-[400px] bg-blue-500/5 top-[20%] right-[10%];
 }
 
 code {
   font-family: 'JetBrains Mono', monospace;
 }
 
-.glass {
-  @apply bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl;
-}
-
 .scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
@@ -59,22 +49,36 @@ code {
 }
 
 @layer components {
-
-  /* Glassmorphism Classes */
   .glass {
-    @apply bg-glass-white backdrop-blur-md border border-glass-border;
+    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
   }
 
   .glass-card {
-    @apply glass hover:bg-white/[0.08] transition-all duration-300;
+    @apply glass rounded-3xl p-6 transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.12] hover:translate-y-[-2px];
+  }
+
+  .btn-pill {
+    @apply rounded-full px-6 py-2.5 font-semibold transition-all duration-300 active:scale-95;
+  }
+
+  .btn-primary {
+    @apply btn-pill bg-white text-black hover:bg-slate-100 shadow-lg shadow-white/10;
+  }
+
+  .btn-secondary {
+    @apply btn-pill bg-secondary text-white hover:bg-secondary-hover shadow-lg shadow-secondary/20;
+  }
+
+  .btn-ghost {
+    @apply btn-pill text-slate-400 hover:text-white hover:bg-white/5;
   }
 }
 
-/* Gradients */
-.bg-mesh {
-  background-color: #0a0a0c;
-  background-image:
-    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 0.1) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 0.1) 0, transparent 50%);
+/* Typography Enhancements */
+h1, h2, h3 {
+  @apply font-black tracking-tight text-white;
+}
+
+.text-gradient {
+  @apply bg-gradient-to-br from-white via-white to-white/40 bg-clip-text text-transparent;
 }

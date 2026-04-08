@@ -3,7 +3,7 @@ import { auth, googleProvider, githubProvider } from '../firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, UserPlus, Sparkles, AlertCircle, ChevronRight, User, ShieldCheck, Github, Chrome, CheckCircle } from 'lucide-react';
+import { UserPlus, Sparkles, AlertCircle, ChevronRight, ShieldCheck, Github, Chrome, CheckCircle } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -77,50 +77,46 @@ const Auth = () => {
   };
 
   const containerVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
+    initial: { opacity: 0, scale: 0.95 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 1.05 },
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 relative py-12">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] bg-primary/10 rounded-full blur-[140px] -z-10 animate-pulse-slow"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-secondary/10 rounded-full blur-[140px] -z-10 animate-pulse-slow delay-700"></div>
-
-    <motion.div 
-      variants={containerVariants}
-      initial="initial"
-      animate="animate"
-      className="max-w-md w-full"
-    >
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 relative py-12">
+      <motion.div 
+        variants={containerVariants}
+        initial="initial"
+        animate="animate"
+        className="max-w-md w-full"
+      >
         {/* Header Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="inline-flex p-4 bg-white/[0.03] rounded-3xl mb-6 border border-white/10 shadow-inner"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="inline-flex py-1 px-3 bg-secondary/10 rounded-full mb-6 border border-secondary/20 shadow-inner"
           >
-            <Sparkles className="w-10 h-10 text-primary" />
+            <span className="text-[10px] font-black uppercase tracking-wider text-secondary flex items-center gap-2">
+              <Sparkles className="w-3 h-3" />
+              Trusted by developers
+            </span>
           </motion.div>
-          <h1 className="text-5xl font-black mb-4 tracking-tighter text-white bg-gradient-to-br from-white via-white to-white/40 bg-clip-text text-transparent">
-            {isLogin ? 'Welcome back.' : 'Experience flow.'}
+          <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-white leading-[0.9]">
+            {isLogin ? 'Welcome back.' : 'Join the flow.'}
           </h1>
-          <p className="text-slate-400 text-lg font-medium leading-relaxed">
+          <p className="text-slate-400 text-base md:text-lg font-medium leading-relaxed max-w-sm mx-auto">
             {isLogin 
-              ? 'Your library is ready and synchronized.' 
-              : 'Join thousands of developers managing fragments with ease.'}
+              ? 'Sign in to access your snippets across all devices.' 
+              : 'Create your account to start managing code fragments.'}
           </p>
         </div>
 
         {/* Auth Card */}
         <motion.div 
           layout
-          className="glass rounded-[3rem] p-10 shadow-2xl border border-white/10 relative overflow-hidden"
+          className="glass rounded-3xl md:rounded-4xl p-6 md:p-10 shadow-premium border border-white/10 relative overflow-hidden"
         >
-          {/* Subtle accent light */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-[60px]"></div>
-
           <AnimatePresence mode="wait">
             {error && (
               <motion.div 
@@ -129,7 +125,7 @@ const Auth = () => {
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="flex items-start space-x-3 bg-accent/10 border border-accent/20 text-accent px-5 py-4 rounded-2xl mb-8 text-sm font-bold">
+                <div className="flex items-start space-x-3 bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-4 rounded-2xl mb-8 text-sm font-bold">
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
@@ -142,7 +138,7 @@ const Auth = () => {
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="flex items-start space-x-3 bg-primary/10 border border-primary/20 text-primary px-5 py-4 rounded-2xl mb-8 text-sm font-bold">
+                <div className="flex items-start space-x-3 bg-secondary/10 border border-secondary/20 text-secondary px-5 py-4 rounded-2xl mb-8 text-sm font-bold">
                   <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>Reset link sent to your email!</span>
                 </div>
@@ -154,21 +150,18 @@ const Auth = () => {
             <AnimatePresence mode="popLayout">
               {!isLogin && (
                 <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                   className="space-y-2"
                 >
-                  <label className="flex items-center space-x-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">
-                    <User className="w-3.5 h-3.5" />
-                    <span>Full Identity</span>
-                  </label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="E.g. John Carmack"
-                    className="w-full px-6 py-4 bg-white/[0.03] border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.07] transition-all placeholder:text-slate-700 font-bold"
+                    placeholder="E.g. Elon Musk"
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold text-base"
                     required={!isLogin}
                   />
                 </motion.div>
@@ -176,31 +169,25 @@ const Auth = () => {
             </AnimatePresence>
 
             <div className="space-y-2">
-              <label className="flex items-center space-x-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">
-                <Mail className="w-3.5 h-3.5" />
-                <span>Access Terminal</span>
-              </label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="developer@snippetflow.io"
-                className="w-full px-6 py-4 bg-white/[0.03] border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.07] transition-all placeholder:text-slate-700 font-bold"
+                placeholder="developer@example.com"
+                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between ml-2">
-                <label className="flex items-center space-x-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Security Token</span>
-                </label>
+              <div className="flex items-center justify-between ml-1">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Password</label>
                 {isLogin && (
                   <button
                     type="button"
                     onClick={handleForgotPassword}
-                    className="text-[10px] font-black text-primary hover:text-primary-hover uppercase tracking-[0.1em]"
+                    className="text-[10px] font-black text-secondary hover:underline tracking-widest"
                   >
                     Forgot?
                   </button>
@@ -211,8 +198,8 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full px-6 py-4 bg-white/[0.03] border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.07] transition-all placeholder:text-slate-700 font-bold font-mono"
-                required={isLogin}
+                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
+                required
                 minLength={6}
               />
             </div>
@@ -220,63 +207,66 @@ const Auth = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full relative group bg-primary hover:bg-primary-hover text-white font-black py-5 px-6 rounded-2xl transition-all shadow-glow-primary hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-3 disabled:opacity-50 mt-10 overflow-hidden"
+              className="w-full btn-primary py-5 text-lg font-black flex items-center justify-center space-x-3 disabled:opacity-50 mt-8"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
               {loading ? (
-                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                <Loader2 className="w-6 h-6 animate-spin" />
               ) : (
                 <>
-                  {isLogin ? <ShieldCheck className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
-                  <span className="text-lg">{isLogin ? 'Authenticate' : 'Establish Identity'}</span>
+                  {isLogin ? <ShieldCheck className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
+                  <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
                 </>
               )}
             </button>
           </form>
 
-          <div className="relative my-10">
+          <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/5"></div>
             </div>
             <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em]">
-              <span className="bg-[#0c0c0e] px-6 text-slate-600 font-black">Secure Gateways</span>
+              <span className="bg-[#0c0c0e] px-4 text-slate-600 font-bold">Or continue with</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={handleGoogleSignIn}
-              className="flex items-center justify-center space-x-3 bg-white/[0.03] hover:bg-white/[0.07] text-white font-bold py-4 rounded-2xl border border-white/10 transition-all group hover:scale-[1.02]"
+              className="flex items-center justify-center space-x-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all active:scale-95"
             >
-              <Chrome className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+              <Chrome className="w-5 h-5 text-slate-400" />
               <span>Google</span>
             </button>
             <button
               onClick={handleGithubSignIn}
-              className="flex items-center justify-center space-x-3 bg-white/[0.03] hover:bg-white/[0.07] text-white font-bold py-4 rounded-2xl border border-white/10 transition-all group hover:scale-[1.02]"
+              className="flex items-center justify-center space-x-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all active:scale-95"
             >
-              <Github className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+              <Github className="w-5 h-5 text-slate-400" />
               <span>GitHub</span>
             </button>
           </div>
         </motion.div>
 
         {/* Footer switch */}
-        <div className="mt-10 text-center">
+        <div className="mt-8 text-center">
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="group inline-flex items-center space-x-2 text-slate-500 hover:text-white transition-all font-bold py-3 px-6 rounded-2xl hover:bg-white/5"
           >
-            <span>{isLogin ? "No identity established?" : "Previously registered?"}</span>
-            <span className="text-primary group-hover:shadow-glow-primary transition-all underline decoration-2 underline-offset-4">
-              {isLogin ? 'Create One' : 'Log In'}
+            <span>{isLogin ? "New to SnippetFlow?" : "Already have an account?"}</span>
+            <span className="text-secondary group-hover:underline underline-offset-4">
+              {isLogin ? 'Sign Up' : 'Sign In'}
             </span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
-    </motion.div>
+      </motion.div>
     </div>
   );
 };
+
+const Loader2 = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+);
 
 export default Auth;

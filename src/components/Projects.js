@@ -109,133 +109,131 @@ const Projects = ({ user }) => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto pb-24">
+    <div className="max-w-5xl mx-auto pb-24 px-4 sm:px-0">
       {/* Header */}
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-black mb-3 tracking-tight bg-gradient-to-br from-white via-white to-white/40 bg-clip-text text-transparent">
-            Projects
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-8">
+        <div className="space-y-3">
+          <h1 className="text-3xl md:text-5xl font-black mb-2 tracking-tighter text-white leading-none">
+            Projects.
           </h1>
-          <p className="text-slate-400 text-lg">
-            Organise your snippets into focused workspaces.
+          <p className="text-slate-400 text-sm md:text-base font-medium max-w-md">
+            Organize your snippets into focused, high-performance workspaces.
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-primary hover:bg-primary-hover px-6 py-3 rounded-2xl font-bold transition-all shadow-glow-primary hover:scale-[1.02] active:scale-[0.98]"
+          className="btn-primary flex items-center justify-center gap-2 group hover:scale-[1.02] py-4 w-full md:w-auto px-8"
         >
-          <Plus className="w-5 h-5" />
-          New Project
+          <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+          <span>New Project</span>
         </button>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-8">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-        <input
-          type="text"
-          placeholder="Search projects..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-        />
+      {/* Search & Stats */}
+      <div className="flex flex-col md:flex-row gap-4 mb-12">
+        <div className="relative flex-1">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Filter projects by name or description..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full pl-14 pr-6 py-5 bg-white/5 border border-white/10 rounded-3xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-medium"
+          />
+        </div>
       </div>
 
       {/* Content */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center h-48 gap-3">
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-slate-500 text-sm font-medium animate-pulse">Loading projects...</p>
+        <div className="flex flex-col items-center justify-center h-64 gap-4">
+          <div className="w-10 h-10 border-2 border-white/10 border-t-white rounded-full animate-spin" />
+          <p className="text-slate-500 text-sm font-bold uppercase tracking-widest animate-pulse">Synchronizing</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="glass rounded-3xl p-16 text-center border-dashed border-2 border-white/5">
-          <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <FolderOpen className="w-10 h-10 text-primary" />
+        <div className="glass rounded-[3rem] p-20 text-center border border-white/5">
+          <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8 border border-white/10">
+            <FolderOpen className="w-10 h-10 text-slate-400" />
           </div>
-          <h3 className="text-2xl font-bold mb-3">
-            {projects.length === 0 ? 'No projects yet' : 'No results found'}
+          <h3 className="text-3xl font-black mb-4 text-white">
+            {projects.length === 0 ? 'Workspace Empty' : 'No matches found'}
           </h3>
-          <p className="text-slate-400 mb-8 max-w-sm mx-auto">
+          <p className="text-slate-400 mb-10 max-w-sm mx-auto text-lg">
             {projects.length === 0
-              ? 'Create your first project to start organising your snippets.'
-              : 'Try a different search term.'}
+              ? 'Establish your first project to begin organizing your code assets.'
+              : 'Refine your search parameters to locate specific projects.'}
           </p>
           {projects.length === 0 && (
-            <button onClick={openCreate} className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover px-8 py-4 rounded-2xl font-bold transition-all shadow-glow-primary">
-              <Plus className="w-5 h-5" /> Create First Project
+            <button onClick={openCreate} className="btn-primary py-4 px-10">
+              Establish Workspace
             </button>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(proj => {
             const count = snippetCounts[proj.id] ?? 0;
             return (
               <div
                 key={proj.id}
-                className="glass rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all group relative flex flex-col"
+                className="glass-card flex flex-col group relative overflow-hidden"
               >
-                {/* Color accent bar */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
-                  style={{ background: proj.color }}
+                {/* Decorative Aura */}
+                <div 
+                  className="absolute -top-12 -right-12 w-32 h-32 blur-3xl opacity-20 transition-opacity group-hover:opacity-40"
+                  style={{ backgroundColor: proj.color }}
                 />
 
-                {/* Action buttons */}
-                <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => openEdit(proj)}
-                    className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-                    title="Edit"
+                <div className="flex justify-between items-start mb-6">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center border transition-transform group-hover:scale-110"
+                    style={{ 
+                      backgroundColor: `${proj.color}15`, 
+                      borderColor: `${proj.color}30` 
+                    }}
                   >
-                    <Edit2 className="w-3.5 h-3.5 text-slate-400" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(proj)}
-                    className="p-1.5 bg-white/5 hover:bg-accent/20 rounded-lg transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-slate-400 hover:text-accent" />
-                  </button>
-                </div>
-
-                {/* Icon */}
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: `${proj.color}22`, border: `1px solid ${proj.color}44` }}
-                >
-                  <Folder className="w-6 h-6" style={{ color: proj.color }} />
-                </div>
-
-                <h2 className="text-lg font-black text-white mb-1 pr-14">{proj.name}</h2>
-                <p className="text-slate-500 text-sm mb-4 flex-1 line-clamp-2">
-                  {proj.description || 'No description'}
-                </p>
-
-                  <div className="flex items-center gap-3 mt-auto pt-4 border-t border-white/5">
-                    <div className="flex items-center gap-1.5 text-slate-500 text-sm flex-1">
-                      <Code className="w-4 h-4" />
-                      <span className="font-bold" style={{ color: proj.color }}>{count}</span>
-                      <span>snippet{count !== 1 ? 's' : ''}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                      <Link
-                        to={`/create?project=${proj.id}`}
-                        className="flex items-center gap-2 text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-slate-400 hover:text-white"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Add
-                      </Link>
-                      <Link
-                        to={`/snippets?project=${proj.id}`}
-                        className="flex items-center gap-1 text-sm font-bold transition-colors hover:text-white"
-                        style={{ color: proj.color }}
-                      >
-                        View all <ChevronRight className="w-4 h-4" />
-                      </Link>
-                    </div>
+                    <Folder className="w-7 h-7" style={{ color: proj.color }} />
                   </div>
+                  
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => openEdit(proj)}
+                      className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-slate-400 hover:text-white"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(proj)}
+                      className="p-2.5 bg-white/5 hover:bg-red-500/10 rounded-xl transition-colors text-slate-400 hover:text-red-400"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <h2 className="text-xl font-black text-white mb-2 leading-tight group-hover:text-secondary transition-colors">
+                    {proj.name}
+                  </h2>
+                  <p className="text-slate-500 text-sm mb-6 line-clamp-2 leading-relaxed font-medium">
+                    {proj.description || 'No project description added yet.'}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-4">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10">
+                    <Code className="w-3.5 h-3.5 text-slate-400" />
+                    <span className="text-xs font-black text-white">{count}</span>
+                    <span className="text-[10px] uppercase font-black tracking-wider text-slate-500">Snippets</span>
+                  </div>
+                  
+                  <Link
+                    to={`/snippets?project=${proj.id}`}
+                    className="flex items-center gap-1.5 text-sm font-black text-slate-400 hover:text-white transition-all group/link"
+                  >
+                    Open
+                    <ChevronRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
             );
           })}
@@ -264,7 +262,7 @@ const Projects = ({ user }) => {
                   onChange={e => setFormName(e.target.value)}
                   placeholder="e.g. Portfolio Website"
                   required
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-slate-700"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-slate-700 text-base"
                   autoFocus
                 />
               </div>
@@ -276,7 +274,7 @@ const Projects = ({ user }) => {
                   onChange={e => setFormDesc(e.target.value)}
                   placeholder="What is this project about?"
                   rows={3}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-slate-700 resize-none"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-slate-700 resize-none text-base"
                 />
               </div>
 

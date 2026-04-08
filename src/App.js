@@ -34,9 +34,16 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-terminal scanline text-slate-300 selection:bg-primary/30 scroll-smooth font-sans">
+      <div className="min-h-screen text-slate-300 selection:bg-secondary/30 scroll-smooth font-sans relative">
+        {/* Premium Background System */}
+        <div className="bg-premium">
+          <div className="aura aura-1"></div>
+          <div className="aura aura-2"></div>
+          <div className="aura aura-3"></div>
+        </div>
+
         <Header user={user} />
-        <main className="container mx-auto px-4 py-8 md:py-12">
+        <main className="container mx-auto px-4 pt-24 pb-8 md:pt-28 md:pb-16 relative z-10">
           <Routes>
             <Route 
               path="/auth" 
