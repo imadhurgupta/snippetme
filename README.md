@@ -1,4 +1,4 @@
-# 🌊 SnippetFlow
+#  CodeSnippets
 
 **Elevate your developer workflow with SnippetFlow, a modern, terminal-inspired code snippet manager.**
 
