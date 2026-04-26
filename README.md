@@ -1,6 +1,6 @@
 #  CodeSnippets
 
-**Elevate your developer workflow with SnippetFlow, a modern, terminal-inspired code snippet manager.**
+**Elevate your developer workflow with CodeSnippets, a modern, terminal-inspired code snippet manager.**
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -11,9 +11,9 @@
 
 ## ✨ Overview
 
-SnippetFlow is a premium developer tool designed to organize, store, and access your most important code snippets. Featuring a sleek **Terminal Midnight** aesthetic, it combines the power of a modern web application with the focused feel of a high-performance terminal.
+CodeSnippets is a premium developer tool designed to organize, store, and access your most important code snippets. Featuring a sleek **Terminal Midnight** aesthetic, it combines the power of a modern web application with the focused feel of a high-performance terminal.
 
-Managed through a procedural dot-grid background and high-contrast "Matrix Emerald" accents, SnippetFlow isn't just a manager—it's your technical workspace.
+Managed through a procedural dot-grid background and high-contrast "Matrix Emerald" accents, CodeSnippets isn't just a manager—it's your technical workspace.
 
 ## 🚀 Key Features
 
@@ -49,8 +49,8 @@ Managed through a procedural dot-grid background and high-contrast "Matrix Emera
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/imadhurgupta/code-snippets.git
-    cd code-snippets
+    git clone https://github.com/imadhurgupta/codesnippets.git
+    cd codesnippets
     ```
 
 2.  **Install dependencies**:

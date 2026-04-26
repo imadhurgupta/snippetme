@@ -27,7 +27,7 @@ const Header = ({ user }) => {
             <Code className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
           <span className="text-xs md:text-sm font-black tracking-tight text-white hidden lg:block">
-            SnippetFlow
+            CodeSnippets
           </span>
         </Link>
         

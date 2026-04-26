@@ -253,7 +253,7 @@ const Auth = () => {
             onClick={() => setIsLogin(!isLogin)}
             className="group inline-flex items-center space-x-2 text-slate-500 hover:text-white transition-all font-bold py-3 px-6 rounded-2xl hover:bg-white/5"
           >
-            <span>{isLogin ? "New to SnippetFlow?" : "Already have an account?"}</span>
+            <span>{isLogin ? "New to CodeSnippets?" : "Already have an account?"}</span>
             <span className="text-secondary group-hover:underline underline-offset-4">
               {isLogin ? 'Sign Up' : 'Sign In'}
             </span>

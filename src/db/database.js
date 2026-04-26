@@ -1,7 +1,8 @@
 import initSqlJs from 'sql.js';
 
 // ─── Config ──────────────────────────────────────────────────────────────────
-const DB_KEY  = process.env.REACT_APP_DATABASE_LOCAL_STORAGE_KEY || 'snippetflow_sqlite_v1';
+const DB_KEY_OLD = 'snippetflow_sqlite_v1';
+const DB_KEY  = process.env.REACT_APP_DATABASE_LOCAL_STORAGE_KEY || 'codesnippets_sqlite_v1';
 
 let _db  = null;
 let _SQL = null;
@@ -14,7 +15,18 @@ export const getDB = async () => {
     locateFile: file => `/${file}` 
   });
 
-  const stored = localStorage.getItem(DB_KEY);
+  let stored = localStorage.getItem(DB_KEY);
+  
+  // Migration from old key if exists
+  if (!stored) {
+    const oldStored = localStorage.getItem(DB_KEY_OLD);
+    if (oldStored) {
+      stored = oldStored;
+      localStorage.setItem(DB_KEY, stored);
+      localStorage.removeItem(DB_KEY_OLD);
+    }
+  }
+
   _db = stored
     ? new _SQL.Database(new Uint8Array(JSON.parse(stored)))
     : new _SQL.Database();
@@ -226,7 +238,7 @@ export const exportDBFile = async () => {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = `snippetflow-backup-${new Date().toISOString().split('T')[0]}.db`;
+  a.download = `codesnippets-backup-${new Date().toISOString().split('T')[0]}.db`;
   a.click();
   URL.revokeObjectURL(url);
 };
