@@ -1,79 +1,80 @@
-import React, { useState } from 'react';
-import { auth, googleProvider, githubProvider } from '../firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserPlus, Sparkles, AlertCircle, ChevronRight, ShieldCheck, Github, Chrome, CheckCircle } from 'lucide-react';
+import { Sparkles, AlertCircle, Loader2, UserPlus, ShieldCheck, ChevronRight } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
+import { AuthContext } from '../App';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [identifier, setIdentifier] = useState(''); // Email or Name for login
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   const handleAuth = async (e) => {
     e.preventDefault();
-    setError('');
-    setResetSent(false);
     setLoading(true);
+    setError('');
+
+    const url = isLogin ? '/api/auth/login' : '/api/auth/register';
+    const body = isLogin 
+      ? { identifier, password } 
+      : { name, email, password };
+
     try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem('gcp_token', data.token);
+        setUser(data.user);
+        navigate('/');
       } else {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, { displayName: name });
+        setError(data.error || 'Authentication failed');
       }
-      navigate('/');
     } catch (err) {
-      const code = err.code || '';
-      let msg = err.message.replace('Firebase:', '').trim();
-      if (code === 'auth/wrong-password') msg = 'Incorrect password. Please try again.';
-      if (code === 'auth/user-not-found') msg = 'Account not found. Would you like to register?';
-      setError(msg);
+      setError('A network error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      setError('Please enter your email address first.');
-      return;
-    }
+  const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true);
     setError('');
     try {
-      await sendPasswordResetEmail(auth, email);
-      setResetSent(true);
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: credentialResponse.credential }),
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        localStorage.setItem('gcp_token', data.token);
+        setUser(data.user);
+        navigate('/');
+      } else {
+        setError(data.error || 'Authentication failed');
+      }
     } catch (err) {
-      setError(err.message.replace('Firebase:', '').trim());
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setError('');
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/');
-    } catch (err) {
-      setError(err.message.replace('Firebase:', '').trim());
-    }
-  };
-
-  const handleGithubSignIn = async () => {
-    setError('');
-    try {
-      await signInWithPopup(auth, githubProvider);
-      navigate('/');
-    } catch (err) {
-      setError(err.message.replace('Firebase:', '').trim());
-    }
+  const handleGoogleError = () => {
+    setError('Google Sign-In was unsuccessful. Try again later.');
   };
 
   const containerVariants = {
@@ -90,7 +91,6 @@ const Auth = () => {
         animate="animate"
         className="max-w-md w-full"
       >
-        {/* Header Section */}
         <div className="text-center mb-10">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
@@ -112,7 +112,6 @@ const Auth = () => {
           </p>
         </div>
 
-        {/* Auth Card */}
         <motion.div 
           layout
           className="glass rounded-3xl md:rounded-4xl p-6 md:p-10 shadow-premium border border-white/10 relative overflow-hidden"
@@ -123,24 +122,11 @@ const Auth = () => {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
+                className="overflow-hidden w-full"
               >
-                <div className="flex items-start space-x-3 bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-4 rounded-2xl mb-8 text-sm font-bold">
+                <div className="flex items-start space-x-3 bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-4 rounded-2xl mb-8 text-sm font-bold w-full">
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
-                </div>
-              </motion.div>
-            )}
-            {resetSent && (
-              <motion.div 
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="flex items-start space-x-3 bg-secondary/10 border border-secondary/20 text-secondary px-5 py-4 rounded-2xl mb-8 text-sm font-bold">
-                  <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <span>Reset link sent to your email!</span>
                 </div>
               </motion.div>
             )}
@@ -148,51 +134,60 @@ const Auth = () => {
 
           <form onSubmit={handleAuth} className="space-y-6">
             <AnimatePresence mode="popLayout">
-              {!isLogin && (
+              {!isLogin ? (
+                // SIGN UP FORM
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-6"
+                >
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="E.g. Elon Musk"
+                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="developer@example.com"
+                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
+                      required
+                    />
+                  </div>
+                </motion.div>
+              ) : (
+                // LOGIN FORM
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="space-y-2"
                 >
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email or Name</label>
                   <input
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="E.g. Elon Musk"
-                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold text-base"
-                    required={!isLogin}
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="E.g. Elon Musk or elon@example.com"
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
+                    required
                   />
                 </motion.div>
               )}
             </AnimatePresence>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="developer@example.com"
-                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between ml-1">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Password</label>
-                {isLogin && (
-                  <button
-                    type="button"
-                    onClick={handleForgotPassword}
-                    className="text-[10px] font-black text-secondary hover:underline tracking-widest"
-                  >
-                    Forgot?
-                  </button>
-                )}
-              </div>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
               <input
                 type="password"
                 value={password}
@@ -229,28 +224,29 @@ const Auth = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={handleGoogleSignIn}
-              className="flex items-center justify-center space-x-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all active:scale-95"
-            >
-              <Chrome className="w-5 h-5 text-slate-400" />
-              <span>Google</span>
-            </button>
-            <button
-              onClick={handleGithubSignIn}
-              className="flex items-center justify-center space-x-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all active:scale-95"
-            >
-              <Github className="w-5 h-5 text-slate-400" />
-              <span>GitHub</span>
-            </button>
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+              theme="filled_black"
+              shape="pill"
+              size="large"
+              text={isLogin ? 'signin_with' : 'signup_with'}
+            />
           </div>
         </motion.div>
 
-        {/* Footer switch */}
         <div className="mt-8 text-center">
           <button
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError('');
+              setName('');
+              setEmail('');
+              setPassword('');
+              setIdentifier('');
+            }}
             className="group inline-flex items-center space-x-2 text-slate-500 hover:text-white transition-all font-bold py-3 px-6 rounded-2xl hover:bg-white/5"
           >
             <span>{isLogin ? "New to CodeSnippets?" : "Already have an account?"}</span>
@@ -264,9 +260,5 @@ const Auth = () => {
     </div>
   );
 };
-
-const Loader2 = ({ className }) => (
-  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-);
 
 export default Auth;

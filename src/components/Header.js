@@ -1,20 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { AuthContext } from '../App';
 import { Code, Plus, LogOut, User as UserIcon, LayoutGrid, Database } from 'lucide-react';
 
 const Header = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setUser } = useContext(AuthContext);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/auth');
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('gcp_token');
+    setUser(null);
+    navigate('/auth');
   };
 
   const isActive = (path) => location.pathname === path;

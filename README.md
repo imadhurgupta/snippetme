@@ -4,9 +4,9 @@
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org/)
+[![GCP](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/)
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
-
 ---
 
 ## ✨ Overview
@@ -17,7 +17,7 @@ Managed through a procedural dot-grid background and high-contrast "Matrix Emera
 
 ## 🚀 Key Features
 
--   **🔐 Secure Authentication**: Integrated with Firebase Auth (Google & GitHub support) to keep your snippets private and synced across devices.
+-   **🔐 Secure Authentication**: Integrated with Google Cloud Platform Identity (GCP Auth) via OAuth 2.0.
 -   **📁 Project-Based Organization**: Group snippets into focused projects with custom color accents and descriptions.
 -   **🛡️ Syntax Highlighting**: Premium code rendering for 50+ languages using `react-syntax-highlighter`.
 -   **🔍 Instantly Searchable**: Lightning-fast search across projects and snippet titles.
@@ -30,8 +30,9 @@ Managed through a procedural dot-grid background and high-contrast "Matrix Emera
 
 -   **Frontend**: React.js 18
 -   **Styling**: Tailwind CSS (Custom Developer Theme)
--   **Database**: Firebase Firestore & SQL.js
--   **Auth**: Firebase Authentication
+-   **Database**: PostgreSQL
+-   **Auth**: Google Cloud Identity Platform (OAuth 2.0)
+-   **Backend**: Node.js & Express
 -   **Icons**: Lucide React
 -   **Animations**: Framer Motion
 
@@ -43,7 +44,8 @@ Managed through a procedural dot-grid background and high-contrast "Matrix Emera
 
 -   [Node.js](https://nodejs.org/) (v16.0.0 or higher)
 -   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
--   A [Firebase Project](https://console.firebase.google.com/)
+-   A [Google Cloud Project](https://console.cloud.google.com/)
+-   [PostgreSQL](https://www.postgresql.org/) running locally or in cloud
 
 ### Installation
 
@@ -59,14 +61,10 @@ Managed through a procedural dot-grid background and high-contrast "Matrix Emera
     ```
 
 3.  **Environment Setup**:
-    Create a `.env` file in the root directory and add your Firebase credentials:
+    Create a `.env` file in the root directory and add your credentials:
     ```env
-    REACT_APP_FIREBASE_API_KEY=your_api_key
-    REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-    REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-    REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-    REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-    REACT_APP_FIREBASE_APP_ID=your_app_id
+    REACT_APP_GOOGLE_CLIENT_ID=your_gcp_oauth_client_id
+    DATABASE_URL=postgres://user:password@localhost:5432/codesnippets
     ```
 
 4.  **Start the development server**:
@@ -82,7 +80,7 @@ Managed through a procedural dot-grid background and high-contrast "Matrix Emera
 src/
 ├── components/       # UI Components (Header, Auth, SnippetCard, etc.)
 ├── db/               # Database logic and SQL.js integration
-├── firebase.js       # Firebase initialization and service exports
+├── server.js         # Express Backend Server and Database queries
 ├── App.js            # Main application routing and theme setup
 ├── index.css         # Global styles and Tailwind directives
 └── App.css           # Component-specific styles and animations

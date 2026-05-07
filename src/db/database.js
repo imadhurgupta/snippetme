@@ -1,252 +1,97 @@
-import initSqlJs from 'sql.js';
+const getToken = () => localStorage.getItem('gcp_token');
 
-// ─── Config ──────────────────────────────────────────────────────────────────
-const DB_KEY_OLD = 'snippetflow_sqlite_v1';
-const DB_KEY  = process.env.REACT_APP_DATABASE_LOCAL_STORAGE_KEY || 'codesnippets_sqlite_v1';
-
-let _db  = null;
-let _SQL = null;
-
-// ─── Init ─────────────────────────────────────────────────────────────────────
-export const getDB = async () => {
-  if (_db) return _db;
-
-  _SQL = await initSqlJs({ 
-    locateFile: file => `/${file}` 
-  });
-
-  let stored = localStorage.getItem(DB_KEY);
-  
-  // Migration from old key if exists
-  if (!stored) {
-    const oldStored = localStorage.getItem(DB_KEY_OLD);
-    if (oldStored) {
-      stored = oldStored;
-      localStorage.setItem(DB_KEY, stored);
-      localStorage.removeItem(DB_KEY_OLD);
-    }
+const request = async (url, options = {}) => {
+  const token = getToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...options.headers,
+  };
+  const response = await fetch(url, { ...options, headers });
+  if (!response.ok) {
+    throw new Error(await response.text());
   }
-
-  _db = stored
-    ? new _SQL.Database(new Uint8Array(JSON.parse(stored)))
-    : new _SQL.Database();
-
-  _db.run(`
-    CREATE TABLE IF NOT EXISTS snippets (
-      id          TEXT PRIMARY KEY,
-      title       TEXT NOT NULL DEFAULT '',
-      description TEXT NOT NULL DEFAULT '',
-      language    TEXT NOT NULL DEFAULT 'JavaScript',
-      code        TEXT NOT NULL DEFAULT '',
-      tags        TEXT NOT NULL DEFAULT '[]',
-      project_id  TEXT NOT NULL DEFAULT '',
-      user_id     TEXT NOT NULL,
-      created_at  INTEGER NOT NULL,
-      updated_at  INTEGER NOT NULL
-    );
-  `);
-
-  _db.run(`
-    CREATE TABLE IF NOT EXISTS projects (
-      id          TEXT PRIMARY KEY,
-      name        TEXT NOT NULL,
-      description TEXT NOT NULL DEFAULT '',
-      color       TEXT NOT NULL DEFAULT '#6366f1',
-      user_id     TEXT NOT NULL,
-      created_at  INTEGER NOT NULL
-    );
-  `);
-
-  persist();
-  return _db;
+  return response.json();
 };
 
-// ─── Persistence ──────────────────────────────────────────────────────────────
-export const persist = () => {
-  if (!_db) return;
-  try {
-    localStorage.setItem(DB_KEY, JSON.stringify(Array.from(_db.export())));
-  } catch {
-    console.warn('sqlite: localStorage quota exceeded');
-  }
-};
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-const uid = () =>
-  typeof crypto.randomUUID === 'function'
-    ? crypto.randomUUID()
-    : Date.now().toString(36) + Math.random().toString(36).slice(2);
-
-const now = () => Date.now();
-
-const toRows = (results) => {
-  if (!results.length) return [];
-  const { columns, values } = results[0];
-  return values.map(row =>
-    Object.fromEntries(columns.map((col, i) => [col, row[i]]))
-  );
-};
-
-const mapSnippet = (row) => ({
-  id:          row.id,
-  title:       row.title,
-  description: row.description,
-  language:    row.language,
-  code:        row.code,
-  tags:        JSON.parse(row.tags || '[]'),
-  projectId:   row.project_id,
-  userId:      row.user_id,
-  createdAt:   row.created_at,
-  updatedAt:   row.updated_at,
-});
-
-const mapProject = (row) => ({
-  id:          row.id,
-  name:        row.name,
-  description: row.description,
-  color:       row.color,
-  userId:      row.user_id,
-  createdAt:   row.created_at,
-});
-
-// ─── Snippets ─────────────────────────────────────────────────────────────────
 export const getSnippets = async (userId, projectId = null) => {
-  const db = await getDB();
-  const results = projectId
-    ? db.exec(`SELECT * FROM snippets WHERE user_id=? AND project_id=? ORDER BY created_at DESC`, [userId, projectId])
-    : db.exec(`SELECT * FROM snippets WHERE user_id=? ORDER BY created_at DESC`, [userId]);
-  return toRows(results).map(mapSnippet);
+  const url = projectId ? `/api/snippets?projectId=${projectId}` : '/api/snippets';
+  return request(url);
 };
 
 export const getSnippet = async (id) => {
-  const db = await getDB();
-  const results = db.exec(`SELECT * FROM snippets WHERE id=?`, [id]);
-  const rows = toRows(results);
-  return rows.length ? mapSnippet(rows[0]) : null;
+  // Not directly supported, we can just fetch all or filter locally, wait we can just implement fetching one if needed
+  // For now let's just return from getSnippets
+  const snippets = await getSnippets();
+  return snippets.find(s => s.id === id) || null;
 };
 
 export const addSnippet = async (data) => {
-  const db = await getDB();
-  const id = uid();
-  const ts = now();
-  db.run(
-    `INSERT INTO snippets (id,title,description,language,code,tags,project_id,user_id,created_at,updated_at)
-     VALUES (?,?,?,?,?,?,?,?,?,?)`,
-    [
-      id,
-      data.title        || '',
-      data.description  || '',
-      data.language     || 'JavaScript',
-      data.code         || '',
-      JSON.stringify(Array.isArray(data.tags) ? data.tags : []),
-      data.projectId    || '',
-      data.userId,
-      ts, ts,
-    ]
-  );
-  persist();
-  return id;
+  const res = await request('/api/snippets', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return res.id;
 };
 
 export const updateSnippet = async (id, data) => {
-  const db = await getDB();
-  db.run(
-    `UPDATE snippets SET title=?,description=?,language=?,code=?,tags=?,project_id=?,updated_at=? WHERE id=?`,
-    [
-      data.title        || '',
-      data.description  || '',
-      data.language     || 'JavaScript',
-      data.code         || '',
-      JSON.stringify(Array.isArray(data.tags) ? data.tags : []),
-      data.projectId    || '',
-      now(),
-      id,
-    ]
-  );
-  persist();
+  await request(`/api/snippets/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
 };
 
 export const deleteSnippet = async (id) => {
-  const db = await getDB();
-  db.run(`DELETE FROM snippets WHERE id=?`, [id]);
-  persist();
+  await request(`/api/snippets/${id}`, {
+    method: 'DELETE',
+  });
 };
 
-// ─── Projects ─────────────────────────────────────────────────────────────────
 export const getProjects = async (userId) => {
-  const db = await getDB();
-  const results = db.exec(`SELECT * FROM projects WHERE user_id=? ORDER BY created_at DESC`, [userId]);
-  return toRows(results).map(mapProject);
+  return request('/api/projects');
 };
 
 export const getProject = async (id) => {
-  const db = await getDB();
-  const results = db.exec(`SELECT * FROM projects WHERE id=?`, [id]);
-  const rows = toRows(results);
-  return rows.length ? mapProject(rows[0]) : null;
+  const projects = await getProjects();
+  return projects.find(p => p.id === id) || null;
 };
 
 export const addProject = async (data) => {
-  const db = await getDB();
-  const id = uid();
-  db.run(
-    `INSERT INTO projects (id,name,description,color,user_id,created_at) VALUES (?,?,?,?,?,?)`,
-    [id, data.name, data.description || '', data.color || '#6366f1', data.userId, now()]
-  );
-  persist();
-  return id;
+  const res = await request('/api/projects', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return res.id;
 };
 
 export const updateProject = async (id, data) => {
-  const db = await getDB();
-  db.run(
-    `UPDATE projects SET name=?,description=?,color=? WHERE id=?`,
-    [data.name, data.description || '', data.color || '#6366f1', id]
-  );
-  persist();
+  await request(`/api/projects/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
 };
 
 export const deleteProject = async (id) => {
-  const db = await getDB();
-  db.run(`DELETE FROM projects WHERE id=?`, [id]);
-  persist();
+  await request(`/api/projects/${id}`, {
+    method: 'DELETE',
+  });
 };
 
 export const getSnippetCountByProject = async (userId, projectId) => {
-  const db = await getDB();
-  const results = db.exec(
-    `SELECT COUNT(*) as count FROM snippets WHERE user_id=? AND project_id=?`,
-    [userId, projectId]
-  );
-  const rows = toRows(results);
-  return rows.length ? (rows[0].count || 0) : 0;
+  const res = await request(`/api/projects/${projectId}/count`);
+  return res.count;
 };
 
-// ─── User data management ─────────────────────────────────────────────────────
 export const deleteAllUserData = async (userId) => {
-  const db = await getDB();
-  db.run(`DELETE FROM snippets WHERE user_id=?`, [userId]);
-  db.run(`DELETE FROM projects WHERE user_id=?`, [userId]);
-  persist();
+  await request(`/api/users/${userId}`, {
+    method: 'DELETE',
+  });
 };
 
-// ─── Backup / Restore ─────────────────────────────────────────────────────────
 export const exportDBFile = async () => {
-  const db = await getDB();
-  const data = db.export();
-  const blob = new Blob([data], { type: 'application/octet-stream' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `codesnippets-backup-${new Date().toISOString().split('T')[0]}.db`;
-  a.click();
-  URL.revokeObjectURL(url);
+  alert('Exporting DB is not supported in cloud version');
 };
 
 export const importDBFile = async (file) => {
-  const buf  = await file.arrayBuffer();
-  const data = new Uint8Array(buf);
-  _SQL = _SQL || await initSqlJs({ locateFile: f => `/${f}` });
-  _db  = new _SQL.Database(data);
-  persist();
+  alert('Importing DB is not supported in cloud version');
 };

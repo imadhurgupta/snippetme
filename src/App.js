@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase';
 import Header from './components/Header';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
@@ -11,16 +9,31 @@ import Profile from './components/Profile';
 import Projects from './components/Projects';
 import { Loader2 } from 'lucide-react';
 
+export const AuthContext = React.createContext(null);
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const token = localStorage.getItem('gcp_token');
+    if (token) {
+      fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          localStorage.removeItem('gcp_token');
+        }
+      })
+      .catch(() => localStorage.removeItem('gcp_token'))
+      .finally(() => setLoading(false));
+    } else {
       setLoading(false);
-    });
-    return () => unsubscribe();
+    }
   }, []);
 
   if (loading) {
@@ -33,6 +46,7 @@ function App() {
   }
 
   return (
+    <AuthContext.Provider value={{ user, setUser }}>
     <Router>
       <div className="min-h-screen text-slate-300 selection:bg-secondary/30 scroll-smooth font-sans relative">
         {/* Premium Background System */}
@@ -78,6 +92,7 @@ function App() {
         </main>
       </div>
     </Router>
+    </AuthContext.Provider>
   );
 }
 
