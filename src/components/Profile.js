@@ -4,7 +4,7 @@ import { getSnippets, deleteAllUserData } from '../db/database';
 import { AuthContext } from '../App';
 import {
   Mail, Calendar, Code, Tag,
-  LogOut, Trash2, Activity, ChevronRight
+  LogOut, Trash2, Activity, ChevronRight, Edit2, Check, X, Loader2
 } from 'lucide-react';
 
 const Profile = ({ user }) => {
@@ -16,6 +16,42 @@ const Profile = ({ user }) => {
 
   // Delete account state
   const [deleteConfirm, setDeleteConfirm] = useState('');
+
+  // Edit name state
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [isSavingName, setIsSavingName] = useState(false);
+
+  const handleSaveName = async () => {
+    if (!editName.trim() || editName.trim() === user.name) {
+      setIsEditingName(false);
+      return;
+    }
+    setIsSavingName(true);
+    try {
+      const res = await fetch('/api/users/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('gcp_token')}`
+        },
+        body: JSON.stringify({ name: editName.trim() })
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        localStorage.setItem('gcp_token', data.token);
+        setUser(data.user);
+        setIsEditingName(false);
+      } else {
+        alert(data.error || 'Failed to update name');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error while updating name');
+    } finally {
+      setIsSavingName(false);
+    }
+  };
 
   const fetchSnippets = useCallback(async () => {
     try {
@@ -85,9 +121,38 @@ const Profile = ({ user }) => {
 
               <div className="pb-2">
                 <div className="flex items-center gap-3 group justify-center sm:justify-start">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
-                    {user.name || user.email?.split('@')[0] || 'Member'}
-                  </h1>
+                  {isEditingName ? (
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="text" 
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="bg-white/10 border border-white/20 rounded-xl px-3 py-1 text-xl sm:text-3xl font-black text-white outline-none focus:border-secondary w-full max-w-[180px] sm:max-w-[220px]"
+                        autoFocus
+                        onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
+                        disabled={isSavingName}
+                      />
+                      <button onClick={handleSaveName} disabled={isSavingName} className="p-2 bg-green-500/20 text-green-400 rounded-xl hover:bg-green-500/30 transition-all disabled:opacity-50">
+                        {isSavingName ? <Loader2 className="w-5 h-5 animate-spin" /> : <Check className="w-5 h-5" />}
+                      </button>
+                      <button onClick={() => setIsEditingName(false)} disabled={isSavingName} className="p-2 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition-all disabled:opacity-50">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
+                        {user.name || user.email?.split('@')[0] || 'Member'}
+                      </h1>
+                      <button 
+                        onClick={() => { setEditName(user.name || user.email?.split('@')[0] || ''); setIsEditingName(true); }}
+                        className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white"
+                        title="Edit Name"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

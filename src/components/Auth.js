@@ -1,14 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, AlertCircle, Loader2, UserPlus, ShieldCheck, ChevronRight } from 'lucide-react';
-import { GoogleLogin } from '@react-oauth/google';
+import { Sparkles, AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
+
 import { AuthContext } from '../App';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [identifier, setIdentifier] = useState(''); // Email or Name for login
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
@@ -22,10 +19,8 @@ const Auth = () => {
     setLoading(true);
     setError('');
 
-    const url = isLogin ? '/api/auth/login' : '/api/auth/register';
-    const body = isLogin 
-      ? { identifier, password } 
-      : { name, email, password };
+    const url = '/api/auth/login';
+    const body = { email, password };
 
     try {
       const res = await fetch(url, {
@@ -49,33 +44,7 @@ const Auth = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: credentialResponse.credential }),
-      });
-      const data = await res.json();
-      if (res.ok && data.token) {
-        localStorage.setItem('gcp_token', data.token);
-        setUser(data.user);
-        navigate('/');
-      } else {
-        setError(data.error || 'Authentication failed');
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleGoogleError = () => {
-    setError('Google Sign-In was unsuccessful. Try again later.');
-  };
 
   const containerVariants = {
     initial: { opacity: 0, scale: 0.95 },
@@ -103,12 +72,10 @@ const Auth = () => {
             </span>
           </motion.div>
           <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-white leading-[0.9]">
-            {isLogin ? 'Welcome back.' : 'Join the flow.'}
+            Welcome to SnippetMe
           </h1>
           <p className="text-slate-400 text-base md:text-lg font-medium leading-relaxed max-w-sm mx-auto">
-            {isLogin 
-              ? 'Sign in to access your snippets across all devices.' 
-              : 'Create your account to start managing code fragments.'}
+            Sign in or create an account to access your snippets.
           </p>
         </div>
 
@@ -133,58 +100,17 @@ const Auth = () => {
           </AnimatePresence>
 
           <form onSubmit={handleAuth} className="space-y-6">
-            <AnimatePresence mode="popLayout">
-              {!isLogin ? (
-                // SIGN UP FORM
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="space-y-6"
-                >
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="E.g. Elon Musk"
-                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="developer@example.com"
-                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
-                      required
-                    />
-                  </div>
-                </motion.div>
-              ) : (
-                // LOGIN FORM
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="space-y-2"
-                >
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email or Name</label>
-                  <input
-                    type="text"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="E.g. Elon Musk or elon@example.com"
-                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
-                    required
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="developer@example.com"
+                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all placeholder:text-slate-600 font-bold"
+                required
+              />
+            </div>
 
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
@@ -208,54 +134,17 @@ const Auth = () => {
                 <Loader2 className="w-6 h-6 animate-spin" />
               ) : (
                 <>
-                  {isLogin ? <ShieldCheck className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
-                  <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
+                  <ShieldCheck className="w-6 h-6" />
+                  <span>Continue</span>
                 </>
               )}
             </button>
           </form>
 
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/5"></div>
-            </div>
-            <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em]">
-              <span className="bg-[#0c0c0e] px-4 text-slate-600 font-bold">Or continue with</span>
-            </div>
-          </div>
 
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              useOneTap
-              theme="filled_black"
-              shape="pill"
-              size="large"
-              text={isLogin ? 'signin_with' : 'signup_with'}
-            />
-          </div>
         </motion.div>
 
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError('');
-              setName('');
-              setEmail('');
-              setPassword('');
-              setIdentifier('');
-            }}
-            className="group inline-flex items-center space-x-2 text-slate-500 hover:text-white transition-all font-bold py-3 px-6 rounded-2xl hover:bg-white/5"
-          >
-            <span>{isLogin ? "New to CodeSnippets?" : "Already have an account?"}</span>
-            <span className="text-secondary group-hover:underline underline-offset-4">
-              {isLogin ? 'Sign Up' : 'Sign In'}
-            </span>
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </div>
+
       </motion.div>
     </div>
   );

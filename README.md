@@ -1,108 +1,101 @@
-#  CodeSnippets
+# SnippetMe
 
-**Elevate your developer workflow with CodeSnippets, a modern, terminal-inspired code snippet manager.**
+**Elevate your developer workflow with SnippetMe, a modern, terminal-inspired code snippet manager.**
 
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org/)
-[![GCP](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
----
+![SnippetMe Overview](/assets/screenshot.png) *(Note: Replace with actual screenshot)*
 
-## ✨ Overview
+## 🚀 Overview
 
-CodeSnippets is a premium developer tool designed to organize, store, and access your most important code snippets. Featuring a sleek **Terminal Midnight** aesthetic, it combines the power of a modern web application with the focused feel of a high-performance terminal.
+SnippetMe is a premium developer tool designed to organize, store, and access your most important code fragments. Featuring a sleek **Terminal Midnight** aesthetic, it combines the power of a modern web application with the focused feel of a high-performance terminal.
 
-Managed through a procedural dot-grid background and high-contrast "Matrix Emerald" accents, CodeSnippets isn't just a manager—it's your technical workspace.
+With an emphasis on speed, clean UI, and robust backend architecture, SnippetMe allows you to save code blocks across multiple languages, categorize them with tags, and assign them to specific projects.
 
-## 🚀 Key Features
+## ✨ Features
 
--   **🔐 Secure Authentication**: Integrated with Google Cloud Platform Identity (GCP Auth) via OAuth 2.0.
--   **📁 Project-Based Organization**: Group snippets into focused projects with custom color accents and descriptions.
--   **🛡️ Syntax Highlighting**: Premium code rendering for 50+ languages using `react-syntax-highlighter`.
--   **🔍 Instantly Searchable**: Lightning-fast search across projects and snippet titles.
--   **⚡ Terminal Midnight UI**: A technical, high-performance aesthetic featuring scanline effects, glassmorphic components, and fluid Framer Motion animations.
--   **📱 Responsive Design**: Fully optimized for desktop and mobile developers.
+- **Seamless Authentication**: Fast and secure JWT-based email authentication. Auto-signup removes friction—just type your email and password, and you're in.
+- **Project Organization**: Group snippets logically by project to keep your workspaces distinct and organized.
+- **Advanced Code Management**: Store code snippets with metadata including description, programming language, and custom tags.
+- **Premium UI/UX**: Built with a "glassmorphism" terminal design, beautiful typography, micro-animations via Framer Motion, and a heavily optimized dark mode.
+- **Responsive Design**: fully responsive and usable across desktop, tablet, and mobile devices.
 
----
+## 🛠️ Technology Stack
 
-## 🛠️ Tech Stack
+SnippetMe has been structured using modern industry standards for scalability and maintainability.
 
--   **Frontend**: React.js 18
--   **Styling**: Tailwind CSS (Custom Developer Theme)
--   **Database**: PostgreSQL
--   **Auth**: Google Cloud Identity Platform (OAuth 2.0)
--   **Backend**: Node.js & Express
--   **Icons**: Lucide React
--   **Animations**: Framer Motion
+### Frontend
+- **React.js** (v18+)
+- **Tailwind CSS** (Utility-first styling, custom theme tokens)
+- **Framer Motion** (Fluid page transitions and micro-animations)
+- **Lucide React** (Crisp, clean iconography)
+- **React Router v6** (Client-side routing)
 
----
+### Backend
+- **Node.js & Express.js** (Modular architecture: split into routes, controllers, and middleware)
+- **PostgreSQL** (Relational database for secure and structured data storage)
+- **JSON Web Tokens (JWT)** (Stateless, secure session management)
+- **Bcrypt** (Secure password hashing)
 
-## 🏁 Getting Started
+## 📁 Project Structure
+
+The project follows a clean, modular structure:
+
+```text
+├── api/                  # Node.js Express Backend
+│   ├── config/           # Database connections and configurations
+│   ├── middleware/       # JWT authentication middleware
+│   ├── routes/           # Express routers (auth, users, snippets, projects)
+│   └── index.js          # Entry point for the server
+├── src/                  # React Frontend
+│   ├── components/       # Reusable UI components (Auth, Profile, Header, etc.)
+│   ├── db/               # Frontend API wrapper
+│   ├── App.js            # Main React layout and router configuration
+│   └── index.css         # Global Tailwind variables and custom animations
+├── public/               # Static assets
+└── package.json          # Project dependencies and scripts
+```
+
+## ⚙️ Getting Started
 
 ### Prerequisites
 
--   [Node.js](https://nodejs.org/) (v16.0.0 or higher)
--   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
--   A [Google Cloud Project](https://console.cloud.google.com/)
--   [PostgreSQL](https://www.postgresql.org/) running locally or in cloud
+- Node.js (v16 or higher)
+- PostgreSQL (v13 or higher)
+- npm or yarn
 
 ### Installation
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/imadhurgupta/codesnippets.git
-    cd codesnippets
-    ```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/imadhurgupta/snippetme.git
+   cd snippetme
+   ```
 
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-3.  **Environment Setup**:
-    Create a `.env` file in the root directory and add your credentials:
-    ```env
-    REACT_APP_GOOGLE_CLIENT_ID=your_gcp_oauth_client_id
-    DATABASE_URL=postgres://user:password@localhost:5432/codesnippets
-    ```
+3. **Set up environment variables**
+   Create a `.env` file in the root directory and add your credentials:
+   ```env
+   DATABASE_URL=postgres://user:password@localhost:5432/snippetme
+   JWT_SECRET=your_super_secret_jwt_key
+   PORT=5000
+   ```
 
-4.  **Start the development server**:
-    ```bash
-    npm start
-    ```
+4. **Start the application**
+   Run the development server and backend concurrently:
+   ```bash
+   npm start
+   ```
+   *The backend will automatically create the necessary database tables on the first run.*
 
----
-
-## 📂 Project Structure
-
-```text
-src/
-├── components/       # UI Components (Header, Auth, SnippetCard, etc.)
-├── db/               # Database logic and SQL.js integration
-├── server.js         # Express Backend Server and Database queries
-├── App.js            # Main application routing and theme setup
-├── index.css         # Global styles and Tailwind directives
-└── App.css           # Component-specific styles and animations
-```
-
----
-
-## 📜 Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm run build`
-Builds the app for production to the `build` folder.
-
----
+5. **Open in Browser**
+   Navigate to `http://localhost:3000` to start using SnippetMe.
 
 ## 🤝 Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -110,14 +103,6 @@ Contributions are what make the open source community such an amazing place to l
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
----
-
-## 📄 License
+## 📝 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-<p align="center">
-  Built with 💻 by <b>Madhur Gupta</b>
-</p>

@@ -17,14 +17,14 @@ const Header = ({ user }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+    <header className="absolute top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
       <div className="glass rounded-full px-3 md:px-6 h-14 md:h-16 flex items-center justify-between shadow-2xl pointer-events-auto max-w-full border border-white/10 select-none">
         <Link to="/" className="flex items-center space-x-2 group mr-2 md:mr-6 flex-shrink-0">
           <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-all">
             <Code className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
           <span className="text-xs md:text-sm font-black tracking-tight text-white hidden lg:block">
-            CodeSnippets
+            SnippetMe
           </span>
         </Link>
         
